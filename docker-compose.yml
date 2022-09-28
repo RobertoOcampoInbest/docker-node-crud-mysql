@@ -1,24 +1,35 @@
 version: '3'
 
 services:
+  mysqldb:
+    image: mysql:5.7
+    restart: unless-stopped
+    env_file: ./.env
+    environment:
+      - MYSQL_ROOT_PASSWORD=$MYSQLDB_ROOT_PASSWORD
+      - MYSQL_DATABASE=$MYSQLDB_DATABASE
+    ports:
+      - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
+    volumes:
+      - db:/var/lib/mysql
   app:
-    container_name: docker-node-mysql
+    depends_on:
+     - mysqldb
+    #container_name: docker-node-mysql
     build: .
     ports:
-      - "8080:3000"
-    links:
-      - mysql-dev
-    depends_on:
-      - mysql-dev
-    restart: always
+      #- "8080:3000"
+      - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
+    restart: unless-stopped
     command: npm start
-
-
-  mysql-dev:
-    container_name: mysql-container
-    image: mysql:8.0.2
+    env_file: ./.env      
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: node_crud
-    ports:
-      - "3306:3306"
+      - DB_HOST=mysqldb
+      - DB_USER=$MYSQLDB_USER
+      - DB_PASSWORD=$MYSQLDB_ROOT_PASSWORD
+      - DB_NAME=$MYSQLDB_DATABASE
+      - DB_PORT=$MYSQLDB_DOCKER_PORT
+    stdin_open: true
+    tty: true
+volumes: 
+  db:

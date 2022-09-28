@@ -1,0 +1,1 @@
+INSERT INTO events ( e_name, e_start_date, e_end_date,e_added_date, e_desc, e_location) values ("lo que sea 4", "2022-05-05", "2022-05-05", "2022-05-05", "lo que sea 4", "lo que sea 4")

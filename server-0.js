@@ -33,26 +33,17 @@ app.use('/fonts', express.static(__dirname + '/node_modules/font-awesome/fonts')
 /*
 * Database connection
 */
-const HOST = process.env.DB_HOST;
-const PORT = process.env.DB_PORT;
-const USER = process.env.DB_USER;
-const PASSWORD = process.env.DB_PASSWORD;
-const DATABASE = process.env.DB_NAME;
-
 const conn = mysql.createConnection({
-  host: HOST,
-  port: PORT,
-  user: USER,
-  database: DATABASE,
-  password: PASSWORD 
+  host: 'mysql-dev',
+  user: 'root',
+  password: 'root',
+  database: 'node_crud'
 });
 
 conn.connect(function(err) {
   if (err){
     // Server will restart until database connection succeds
     console.log('Cannot connect with database');
-    console.log(HOST, PORT, USER, DATABASE, PASSWORD)
-    //console.log(err)
   }else{
     // Docker container will restart if database is not yet ready for connectivity
     conn.query('CREATE TABLE IF NOT EXISTS events( e_id INT NOT NULL AUTO_INCREMENT, e_name VARCHAR(100) NOT NULL, e_start_date DATE NOT NULL, e_end_date DATE NOT NULL, e_added_date DATE, e_desc TEXT, e_location VARCHAR(200), PRIMARY KEY(e_id))');
@@ -152,14 +143,9 @@ conn.connect(function(err) {
     /*
     * Creating a server
     */
-    /*
+
     app.listen(3000, function(){
       console.log('Server started on port 3000 | 8080 if running on docker...');
-    });
-    */
-    const PORT = process.env.NODE_DOCKER_PORT || 8080;
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}.`);
     });
 
   }
