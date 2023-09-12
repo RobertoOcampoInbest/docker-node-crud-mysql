@@ -1,0 +1,15 @@
+
+services:
+  app_ubuntu:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      #- "8080:3000"
+      - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
+    restart: unless-stopped
+    command: npm start
+    #command: tail -f /dev/null
+    env_file: ./.env
+    stdin_open: true
+    tty: true
